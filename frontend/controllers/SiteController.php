@@ -1,8 +1,9 @@
 <?php
 namespace frontend\controllers;
 
-use app\models\Cours;
-use app\models\Enseignant;
+use common\models\Cours;
+use common\models\Enseignant;
+use common\models\Etudiant;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -155,16 +156,18 @@ class SiteController extends Controller
         $test = 'false';
         if ($model->load(Yii::$app->request->post())) {
             if ($model->role == "Teacher") {
-                $res = Enseignant::findBySql("SELECT * FROM `enseignant` WHERE `matricule` = '%:matricule'", array(':matricule' => $model->matricule));
-                if ($res != null) {
+                $res = Enseignant::findBySql("SELECT * FROM `enseignant` WHERE `matricule` = '".$model->matricule."'")->all();
+
+                if (!empty($res)) {
                     $test = 'true';
                 }
 
 
 
+
             } else {
-                $res = Enseignant::findBySql("SELECT * FROM `etudiant` WHERE `ni` = '%:matricule'", array(':matricule' => $model->matricule));
-                if ($res != null) {
+                $res = Etudiant::findBySql("SELECT * FROM `etudiant` WHERE `ni` = '%:matricule'", array(':matricule' => $model->matricule));
+                if (!empty($res)) {
                     $test = 'true';
                 }
 
@@ -182,7 +185,7 @@ class SiteController extends Controller
             }
         }
 
-        return $this->render('signup', [
+      return $this->render('signup', [
             'model' => $model,
             'message' => $test,
         ]);

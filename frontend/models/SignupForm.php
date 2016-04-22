@@ -1,7 +1,10 @@
 <?php
 namespace frontend\models;
 
+use common\models\Enseignant;
 use common\models\User;
+
+use common\models\Etudiant;
 use yii\base\Model;
 use Yii;
 
@@ -74,6 +77,8 @@ class SignupForm extends Model
 
         ];
     }
+
+
 
 
 

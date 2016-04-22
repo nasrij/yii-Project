@@ -21,7 +21,27 @@ AppAsset::register($this);
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
 </head>
+<style type="text/css">
+    .roundedImage{
+        overflow:hidden;
+        -webkit-border-radius:50px;
+        -moz-border-radius:50px;
+        border-radius:50px;
+        width:40px;
+        height:40px;
+        margin-top: 5px;
+
+    }
+</style>
 <body>
 <?php $this->beginBody() ?>
 
@@ -34,22 +54,45 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
+
+
+
 
     if (Yii::$app->user->isGuest) {
+        $menuItems = [
+            ['label' => 'Home', 'url' => ['/site/index']],
+            ['label' => 'About', 'url' => ['/site/about']],
+            ['label' => 'Contact', 'url' => ['/site/contact']],
+        ];
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $menuItems[] = '<li>'
+    } else {  ?>
+
+    <?PHP
+        if(Yii::$app->user->identity->role == 'Teacher')
+        {
+            $menuItems = [
+                ['label' => 'Home', 'url' => ['/site/index']],
+                ['label' => 'Espace Enseigant', 'url' => ['/cours/index']],
+                ['label' => 'About', 'url' => ['/site/about']],
+                ['label' => 'Contact', 'url' => ['/site/contact']],
+            ];
+        }else if (Yii::$app->user->identity->role == 'Student') {
+            $menuItems = [
+                ['label' => 'Home', 'url' => ['/site/index']],
+                ['label' => 'Espace Etudiant', 'url' => ['/cours/index']],
+                ['label' => 'About', 'url' => ['/site/about']],
+                ['label' => 'Contact', 'url' => ['/site/contact']],
+            ];
+        }
+        $menuItems[] = '<li><div class="roundedImage"> <img style="width: 100%" src="http://localhost/advanced/frontend/web/'.Yii::$app->user->identity->image.'" alt="1"/></div></li><li>'
             . Html::beginForm(['/site/logout'], 'post')
+
             . Html::submitButton(
                 'Logout (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link']
             )
+
             . Html::endForm()
             . '</li>';
     }
